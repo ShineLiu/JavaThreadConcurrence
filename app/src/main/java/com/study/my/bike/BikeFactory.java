@@ -18,6 +18,7 @@ public class BikeFactory {
                     bike.setName(id.toUpperCase());
 
                     store.storeBike(bike);
+                    Log.d("BikeFactory->createBike", "create a bike.");
                     try {
                         sleep(2000);
                     } catch (InterruptedException e) {

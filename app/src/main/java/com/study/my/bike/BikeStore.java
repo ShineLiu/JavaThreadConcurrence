@@ -45,6 +45,7 @@ public class BikeStore {
             bikeBeans = new ArrayList<>();
         }
         bikeBeans.add(bikeBean);
+        tellAll();
     }
 
     /**
@@ -80,7 +81,7 @@ public class BikeStore {
     /**
      * wait for the factory to create
      */
-    public void tellAll() {
+    private void tellAll() {
         countDownLatch.countDown();
     }
 }

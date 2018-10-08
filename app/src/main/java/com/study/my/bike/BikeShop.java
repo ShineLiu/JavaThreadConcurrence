@@ -27,6 +27,7 @@ public final class BikeShop {
             Log.d("sellOneBike", "One bike has been selled.");
             return true;
         } else {
+            Log.d("sellOneBike", "No bike can be selled.");
             return false;
         }
     }
@@ -40,6 +41,7 @@ public final class BikeShop {
                     if (bikes == null || bikes.size() <= 0) {
                         bikes = bikeStore.getBikes(5);
                         if (bikes == null || bikes.size() <= 0) { // if there is no bikes in the shop
+                            Log.d("BikeShop->sellBike", "There is no bike now. ");
                             bikeStore.waitCreate();
                         }
                     }
@@ -57,7 +59,7 @@ public final class BikeShop {
         }.start();
     }
 
-    public void askBikes(final BikeStore bikeStore) {
+    public void requestBikes(final BikeStore bikeStore) {
         new Thread() {
             @Override
             public void run() {
@@ -65,8 +67,11 @@ public final class BikeShop {
                     if (bikes == null || bikes.size() <= 0) {
                         bikes = new ArrayList<>();
                     }
+
+                    Log.d("BikeShop->requestBikes", "Try to request 5 bikes from store");
                     ArrayList bikesInStore = bikeStore.getBikes(5);
                     if (bikesInStore == null || bikesInStore.size() <= 0) { // if there is no bikes in the store
+                        Log.d("BikeShop->requestBikes", "Now there is no bike in store. Please wait!");
                         bikeStore.waitCreate();
                         bikesInStore = bikeStore.getBikes(5);
                         bikes.addAll(bikesInStore);
