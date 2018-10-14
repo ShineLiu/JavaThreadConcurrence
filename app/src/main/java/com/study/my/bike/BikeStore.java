@@ -3,25 +3,22 @@ package com.study.my.bike;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
+import java.util.LinkedList;
 
 public class BikeStore {
     /**
      * all bikes in the store
      */
     private ArrayList<BikeBean> bikeBeans;
-
-    /**
-     * the lock to wait for the factory
-     */
-    private CountDownLatch countDownLatch;
+    private LinkedList<BikeShop> bikeShops;
 
     public BikeStore() {
         if (bikeBeans == null) {
             bikeBeans = new ArrayList<>();
         }
-        if (countDownLatch == null) {
-            countDownLatch = new CountDownLatch(1);
+
+        if (bikeShops == null) {
+            bikeShops = new LinkedList<>();
         }
     }
 
@@ -45,43 +42,32 @@ public class BikeStore {
             bikeBeans = new ArrayList<>();
         }
         bikeBeans.add(bikeBean);
-        tellAll();
+
+        if (bikeShops != null) {
+            bikeShops.removeFirst().getNotified();
+        }
     }
 
     /**
      * store a bike here
      * @param count
      */
-    synchronized public ArrayList<BikeBean> getBikes(final int count) {
+    synchronized public ArrayList<BikeBean> getBikes(final int count, final BikeShop bikeShop) {
         if (bikeBeans == null || bikeBeans.size() <= 0) {
+            if (bikeShops != null && !bikeShops.contains(bikeShop)) {
+                bikeShops.add(bikeShop);
+            }
             return null;
         }
         ArrayList<BikeBean> bikes = new ArrayList<>();
-        int availableBikes = bikeBeans.size() <= count ? bikeBeans.size() : count;
-        for (int i = bikeBeans.size() - 1; i>= bikeBeans.size() - availableBikes; i --) {
+        int bikeSize = bikeBeans.size();
+        int availableBikes = bikeSize <= count ? bikeSize : count;
+        Log.d("BikeStore->getBikes", "get " + availableBikes + " bikes from the store");
+        for (int i = bikeSize - 1; i >= bikeSize - availableBikes && i > 0; i --) {
             bikes.add(bikeBeans.remove(i));
         }
 
-        Log.d("BikeStore->getBikes", "get " + availableBikes + " bikes from the store");
+        //Log.d("BikeStore->getBikes", "get " + availableBikes + " bikes from the store");
         return bikes;
-    }
-
-    /**
-     * wait for the factory to create
-     */
-    public void waitCreate() {
-        try {
-            Log.d("BikeStore->waitCreate", "wait for bikes. The factory is creating.");
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            //do something
-        }
-    }
-
-    /**
-     * wait for the factory to create
-     */
-    private void tellAll() {
-        countDownLatch.countDown();
     }
 }
