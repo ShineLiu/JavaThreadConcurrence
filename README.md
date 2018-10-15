@@ -7,3 +7,7 @@
 4，工厂每隔2秒生成一辆单车（工厂线程先启动8秒之后，商店售卖线程再开始）
 
 5，请明确的打印出工厂生产的过程和商店售卖过程，单车可以只有id属性。
+
+
+Run：
+go to ExampleUnitTest.java and run testProduceAndSellBikes()
